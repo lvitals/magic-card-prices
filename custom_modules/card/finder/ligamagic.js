@@ -26,7 +26,7 @@ module.exports = {
           //read the data
           var $ = cheerio.load(body);
 
-          var name = cardname.replace('+', ' ');
+          var name = $(".breadcrumb .lj.b").text();
           var title = $(".titulo-card").text();
           var subtitle = $(".subtitulo-card").text();
           var rare = $(".card-detalhes #omoRaridade a").text();

@@ -26,16 +26,21 @@ module.exports = {
           //read the data
           var $ = cheerio.load(body);
 
+          var list = $("#cotacao-busca");
+          if (list.length > 0) {
+            reject("Card not found");
+          }
+
           var name = $(".breadcrumb .lj.b").text();
           var title = $(".titulo-card").text();
           var subtitle = $(".subtitulo-card").text();
           var rare = $(".card-detalhes #omoRaridade a").text();
-          var imageUrl = $("#omoImage img").attr("src");
 
           var card_sets_obj = {};
-          var card_set_array = [];
           var card = {};
           var moeda = "BRL";
+          var imageUrl = {};
+
           $(".tabela-card tr").each(function(i, elem) {
             var card_set = $("a", elem).attr("href");
             card_set = card_set.split("%3d")[1];
@@ -60,6 +65,11 @@ module.exports = {
             var regexMajorPrice = new RegExp("VETprecoMaior\\[" + i.toString() + "\\]\\s+=\\s+\"(.*)\";", "i");
             var majorPrice = body.match(regexMajorPrice)[1].replace(',', '.');
             card_sets_obj[card_set][moeda].push(majorPrice);
+
+
+            var regexImage = new RegExp("VETimage\\[" + i.toString() + "\\]\\s+=\\s+\"(.*)\";", "i");
+            var getImage = body.match(regexImage)[1].replace(',', '.');
+            imageUrl[card_set] = getImage;
           });
 
           card["name"] = name;

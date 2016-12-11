@@ -7,8 +7,8 @@ var requestp = require('../../requestp');
 module.exports = {
   find : function(cardname, proxy) {
     // Add some way to get the card with this resource
-    console.log("Looking for " + cardname);
-    console.log("Proxy: " + proxy);
+    // console.log("Looking for " + cardname);
+    // console.log("Proxy: " + proxy);
     return new Promise(function(resolve, reject) {
       var request_options = {
         headers: {
@@ -44,7 +44,7 @@ module.exports = {
           $(".tabela-card tr").each(function(i, elem) {
             var card_set = $("a", elem).attr("href");
             card_set = card_set.split("%3d")[1];
-            card_sets_obj[card_set] = {}; //No prices found yet!
+            card_sets_obj[card_set] = {}; //No prices foundhttp://ligamagic.com.br/?view=cards%2Fsearch&card= yet!
             card_sets_obj[card_set][moeda] = []; //Set prices as USD
 
             //@TODO:  Stop reading from the Javascript at the end of the page
@@ -88,6 +88,31 @@ module.exports = {
           reject(err); //Cascading promises
         });
     });
+  },
+
+  searchCardName: function (cardname, proxy) {
+    // Add some way to get the card with this resource
+    // console.log("Looking for " + cardname);
+    // console.log("Proxy: " + proxy);
+    return new Promise(function(resolve, reject) {
+      var request_options = {
+        headers: {
+          'User-Agent' : 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36',
+          'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+        },
+        url: "http://www.ligamagic.com.br/ajax/cardsearch.php?query=" + cardname
+      };
+
+      requestp(request_options)
+        .then(function(body) {
+          var results = body.substring(body.lastIndexOf("suggestions:")+13,body.lastIndexOf("],data:["));
+          resolve(results.split(","));
+        }, function(err) {
+          reject(err);
+        });
+
+    });
+
   },
 
   replaceSpecialChars: function (str) {
